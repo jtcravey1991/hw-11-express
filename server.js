@@ -37,9 +37,11 @@ app.post("/api/notes", function(req, res) {
 });
 
 app.delete("/api/notes/:noteId", function(req, res) {
-    const noteId = req.params.noteId;
-    console.log(noteId);
-    return res.send(noteId);
+    const index = req.params.noteId;
+    const notes = generateIds(JSON.parse(fs.readFileSync("db/db.json")));
+    notes.splice(index, 1);
+    fs.writeFileSync("db/db.json", JSON.stringify(generateIds(notes)));
+    return res.end();
 });
 
 //starts server
