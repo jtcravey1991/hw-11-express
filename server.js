@@ -29,13 +29,29 @@ app.get("/api/notes", function(req, res) {
 
 app.post("/api/notes", function(req, res) {
     const newNote = req.body;
-    const notes = JSON.parse(fs.readFileSync("db/db.json"));
+    const notes = generateIds(JSON.parse(fs.readFileSync("db/db.json")));
+    newNote.id = notes.length.toString();
     notes.push(newNote);
     fs.writeFileSync("db/db.json", JSON.stringify(notes));
     return res.json(newNote);
 });
 
+app.delete("/api/notes/:noteId", function(req, res) {
+    const noteId = req.params.noteId;
+    console.log(noteId);
+    return res.send(noteId);
+});
+
 //starts server
 app.listen(PORT, function() {
     console.log("App listening on http://localhost:" + PORT);
-})
+});
+
+// generates unique ID's for notes
+function generateIds(input) {
+    const notes = input;
+    for (let i = 0; i < notes.length; i++) {
+        notes[i].id = i.toString();
+    }
+    return notes;
+}
